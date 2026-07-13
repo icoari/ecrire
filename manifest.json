@@ -1,0 +1,14 @@
+{
+  "name": "Écrire — l'atelier du livre",
+  "short_name": "Écrire",
+  "description": "Chapitres, copilote créatif et dictée — l'atelier du livre de Nicolas.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0A0A0F",
+  "theme_color": "#0A0A0F",
+  "icons": [
+    { "src": "icons/icon-192-v3.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512-v3.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
