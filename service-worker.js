@@ -1,4 +1,4 @@
-const CACHE = 'ecrire-v1';
+const CACHE = 'ecrire-v2';
 const ASSETS = [
   './',
   './index.html',
