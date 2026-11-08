@@ -186,6 +186,20 @@ Jamais de réécriture, jamais de leçon de grammaire. Franc mais allié.`;
     }
   }
 
+  // Claude generations from Opus 4.7 / Sonnet 5 on reject temperature (400);
+  // Sonnet 5, Opus 4.7/4.8 and Opus 5 think by default, which can eat a short
+  // max_tokens; Fable and Opus 5.5 cannot stop thinking. Same rule as Bob.
+  function fitClaudeBody(body) {
+    const id = String(body.model || '').toLowerCase();
+    if (/claude-(sonnet-5|opus-4-[78]|opus-5|fable|mythos)/.test(id)) delete body.temperature;
+    if (/claude-(sonnet-5|opus-4-[78]|opus-5(?!-5))/.test(id)) body.thinking = { type: 'disabled' };
+    if (/claude-(fable|mythos|opus-5-5)/.test(id)) {
+      body.output_config = { effort: 'low' };
+      body.max_tokens = Math.max(body.max_tokens || 0, 4096);
+    }
+    return body;
+  }
+
   async function streamLLM(messages, onChunk, opts = {}) {
     const c = llmConfig();
     const tok = authToken();
@@ -195,7 +209,7 @@ Jamais de réécriture, jamais de leçon de grammaire. Franc mais allié.`;
     let body;
     if (format === 'anthropic') {
       const sys = messages.filter(m => m.role === 'system').map(m => m.content).join('\n\n');
-      body = { model: c.model || 'claude-sonnet-4-5', max_tokens: opts.maxTokens ?? 800, temperature: opts.temperature ?? 0.6, stream: true, messages: messages.filter(m => m.role !== 'system') };
+      body = fitClaudeBody({ model: c.model || 'claude-sonnet-5', max_tokens: opts.maxTokens ?? 800, temperature: opts.temperature ?? 0.6, stream: true, messages: messages.filter(m => m.role !== 'system') });
       if (sys) body.system = sys;
     } else {
       body = { messages, temperature: opts.temperature ?? 0.6, max_tokens: opts.maxTokens ?? 800, stream: true };
