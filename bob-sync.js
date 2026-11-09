@@ -2,11 +2,11 @@
 //
 // Contexte : iOS donne un conteneur de stockage séparé à chaque app installée.
 // Bob (cockpit) porte la sync chiffrée de bout en bout ; les apps installées en
-// solo (Santé, Écrire) n'ont ni les clés ni les données. Ce module réplique
+// solo (Écrire) n'ont ni les clés ni les données. Ce module réplique
 // exactement la crypto de Bob (PBKDF2 600k, labels 'auth'/'data', AES-GCM) et
 // synchronise le MÊME blob :
 //   - pull : si le distant est plus récent, on écrit le miroir local complet
-//     (cockpit-v3 + _writer + _healthTracker + _notes) — ce qui apporte aussi
+//     (cockpit-v3 + _writer + _notes) — ce qui apporte aussi
 //     la config LLM nécessaire à la dictée vocale.
 //   - push : on retire le blob le plus frais, on y greffe UNIQUEMENT notre
 //     section, on re-chiffre, on renvoie. Les autres sections ne sont jamais
@@ -23,7 +23,6 @@
   const LS_KEY = 'bob-sync-v1';
   const MIRRORS = {
     _writer: 'bob-writer-v1',
-    _healthTracker: 'health-tracker-v1',
     _notes: 'bob-notes-v1',
   };
   const PUSH_DEBOUNCE_MS = 4000;
